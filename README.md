@@ -1,1 +1,188 @@
-# Birthdaywish
+<!DOCTYPE html>
+<html>
+<head>
+<title>Birthday Surprise</title>
+
+<style>
+body {
+  margin: 0;
+  text-align: center;
+  font-family: Arial;
+  overflow: hidden;
+  color: white;
+
+  /* Animated gradient background */
+  background: linear-gradient(-45deg, #ff4da6, #8000ff, #1a001a, #ff66cc);
+  background-size: 400% 400%;
+  animation: bg 10s ease infinite;
+}
+
+@keyframes bg {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+/* Text */
+#text {
+  font-size: 30px;
+  margin-top: 80px;
+  white-space: pre-line;
+  z-index: 2;
+  position: relative;
+}
+
+/* Glow name */
+.glow {
+  color: white;
+  text-shadow: 0 0 10px #fff, 0 0 20px pink, 0 0 30px hotpink;
+}
+
+/* Photo */
+#photo {
+  margin-top: 20px;
+  display: none;
+}
+#photo img {
+  width: 230px;
+  border-radius: 20px;
+  box-shadow: 0 0 25px white;
+}
+
+/* Love text */
+#love {
+  margin-top: 15px;
+  font-size: 20px;
+  display: none;
+}
+
+/* Hearts */
+.heart {
+  position: fixed;
+  color: pink;
+  animation: float 6s linear infinite;
+  z-index: 1;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-10vh); }
+}
+
+/* Fireworks */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div id="text"></div>
+
+<div id="photo">
+  <img src="https://files.catbox.moe/ag3q0x.jpg">
+</div>
+
+<div id="love">Love,<br>Momina ❤️</div>
+
+<audio id="song" autoplay>
+  <source src="https://files.catbox.moe/unekxy.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Typing effect (FIXED & smooth)
+let message = "Happy 21st Birthday\n";
+let name = "Yousaf";
+let extra = "\nMy Gulab Jamun ❤️";
+
+let i = 0;
+
+function typeEffect() {
+  if (i < message.length) {
+    document.getElementById("text").innerHTML += message.charAt(i);
+    i++;
+    setTimeout(typeEffect, 70);
+  } else {
+    document.getElementById("text").innerHTML += "<span class='glow'>" + name + "</span>" + extra;
+
+    document.getElementById("photo").style.display = "block";
+
+    setTimeout(() => {
+      document.getElementById("love").style.display = "block";
+    }, 800);
+  }
+}
+typeEffect();
+
+// Hearts (controlled)
+function createHeart() {
+  let heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (Math.random() * 15 + 15) + "px";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 500);
+
+// Fireworks (lighter)
+let canvas = document.getElementById("fireworks");
+let ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function createFirework() {
+  let x = Math.random() * canvas.width;
+  let y = Math.random() * canvas.height / 2;
+
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      x, y,
+      dx: (Math.random() - 0.5) * 4,
+      dy: (Math.random() - 0.5) * 4,
+      life: 60
+    });
+  }
+}
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.15)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p, i) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(p.x, p.y, 2, 2);
+
+    p.x += p.dx;
+    p.y += p.dy;
+    p.life--;
+
+    if (p.life <= 0) particles.splice(i, 1);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+setInterval(createFirework, 1200);
+animate();
+
+// Mobile autoplay fix
+document.body.addEventListener('click', function () {
+  document.getElementById("song").play();
+});
+</script>
+
+</body>
+</html>
